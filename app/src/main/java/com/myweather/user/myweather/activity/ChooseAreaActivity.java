@@ -3,8 +3,11 @@ package com.myweather.user.myweather.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -26,6 +29,8 @@ public class ChooseAreaActivity extends Activity {
     private ArrayAdapter<String> adapter;
     private WeatherDB weatherDB;
     private List<String> datalist = new ArrayList<String>();
+    private Button button;
+    private EditText search_text;
 
     private List<City> cityList;
 
@@ -38,6 +43,15 @@ public class ChooseAreaActivity extends Activity {
         adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,datalist);
         listView.setAdapter(adapter);
         weatherDB = WeatherDB.getInstance(this);
+        button = (Button) findViewById(R.id.button);
+        search_text = (EditText) findViewById(R.id.search_text);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = search_text.getText().toString();
+                searchCity(text);
+            }
+        });
         queryCities();
     }
 
@@ -70,9 +84,17 @@ public class ChooseAreaActivity extends Activity {
         });
     }
 
+    private void searchCity(String text){
+        cityList = weatherDB.loadCities(text);
+        datalist.clear();
+        for(City city:cityList){
+            datalist.add(city.getCityName());
+        }
+        adapter.notifyDataSetChanged();
+        listView.setSelection(0);
+    }
+
     private void queryCities(){
-        int a=1;
-        String b="324";
         cityList = weatherDB.loadCities();
         if(cityList.size()>0){
             datalist.clear();

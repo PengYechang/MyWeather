@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 
 import com.myweather.user.myweather.model.City;
 
@@ -44,6 +45,37 @@ public class WeatherDB {
             values.put("prov",city.getProv());
             db.insert("City",null,values);
         }
+    }
+
+    public List<City> loadCities(String text){
+        List<City> list = new ArrayList<City>();
+        String[] selectionArgs = new String[]{text};
+        Cursor cursor = db.query("City", null, "city_name=?", selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            do{
+                City city = new City();
+                city.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                city.setCityName(cursor.getString(cursor.getColumnIndex("city_name")));
+                city.setCityCode(cursor.getString(cursor.getColumnIndex("city_code")));
+                city.setProv(cursor.getString(cursor.getColumnIndex("prov")));
+                list.add(city);
+            }while (cursor.moveToNext());
+        }
+        cursor = db.query("City", null, "prov=?", selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            do{
+                City city = new City();
+                city.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                city.setCityName(cursor.getString(cursor.getColumnIndex("city_name")));
+                city.setCityCode(cursor.getString(cursor.getColumnIndex("city_code")));
+                city.setProv(cursor.getString(cursor.getColumnIndex("prov")));
+                list.add(city);
+            }while (cursor.moveToNext());
+        }
+        if(cursor != null){
+            cursor.close();
+        }
+        return list;
     }
 
     public List<City> loadCities(){
