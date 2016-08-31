@@ -1,6 +1,7 @@
 package com.myweather.user.myweather.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -26,7 +28,7 @@ import com.myweather.user.myweather.util.HttpUtil;
 /**
  * Created by User on 2016/8/31.
  */
-public class WeatherActivity extends Activity{
+public class WeatherActivity extends Activity implements View.OnClickListener{
     private RelativeLayout weather_info_layout;
     private LinearLayout weather_info_layout2;
 
@@ -57,11 +59,37 @@ public class WeatherActivity extends Activity{
     private downloadImageTask task1;
     private downloadImageTask task2;
 
+    private Button switchCity;
+    private Button more;
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.switch_city:
+                Intent intent = new Intent(this,ChooseAreaActivity.class);
+                intent.putExtra("from_weather_activity",true);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.more:
+                Intent intent1 =new Intent(this,MoreinfoActivity.class);
+                startActivity(intent1);
+                break;
+            default:
+                break;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.weather_layout);
+
+        switchCity = (Button) findViewById(R.id.switch_city);
+        switchCity.setOnClickListener(this);
+        more = (Button) findViewById(R.id.more);
+        more.setOnClickListener(this);
 
         weather_info_layout = (RelativeLayout) findViewById(R.id.weather_info);
         weather_info_layout2 = (LinearLayout) findViewById(R.id.weather_info1);

@@ -112,9 +112,16 @@ public class HttpUtil {
             JSONObject weatherInfo = weather.getJSONObject(0);
             JSONObject basic = weatherInfo.getJSONObject("basic");
             String city_name = basic.getString("city");
-            JSONObject aqi = weatherInfo.getJSONObject("aqi");
-            JSONObject city = aqi.getJSONObject("city");
+            JSONObject aqiCity = weatherInfo.getJSONObject("aqi");
+            JSONObject city = aqiCity.getJSONObject("city");
             String qlty = city.getString("qlty");
+            String aqi = city.getString("aqi");
+            String co = city.getString("co");
+            String no2 = city.getString("no2");
+            String o3 = city.getString("o3");
+            String pm10 = city.getString("pm10");
+            String pm25 = city.getString("pm25");
+            String so2 = city.getString("so2");
             JSONObject now = weatherInfo.getJSONObject("now");
             JSONObject cond = now.getJSONObject("cond");
             String cond_code = cond.getString("code");
@@ -147,6 +154,14 @@ public class HttpUtil {
             String tmp2_min = tmp2.getString("min");
             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
             editor.putBoolean("city_selected",true);
+            //空气质量
+            editor.putString("aqi",aqi);
+            editor.putString("co",co);
+            editor.putString("no2",no2);
+            editor.putString("o3",o3);
+            editor.putString("pm10",pm10);
+            editor.putString("pm25",pm25);
+            editor.putString("so2",so2);
             //明后天天气预报
             editor.putString("cond1_code",cond1_code);
             editor.putString("cond1_text",cond1_text);
