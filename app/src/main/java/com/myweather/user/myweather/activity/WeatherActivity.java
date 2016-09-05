@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.myweather.user.myweather.R;
+import com.myweather.user.myweather.service.AutoUpdateService;
 import com.myweather.user.myweather.util.HttpCallbackLister;
 import com.myweather.user.myweather.util.HttpUtil;
 
@@ -61,6 +62,10 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
 
     private Button switchCity;
     private Button more;
+    private Button refreshweather;
+    private Button lifeIndex;
+
+    private String cityCode;
 
     @Override
     public void onClick(View v) {
@@ -74,6 +79,18 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
             case R.id.more:
                 Intent intent1 =new Intent(this,MoreinfoActivity.class);
                 startActivity(intent1);
+                break;
+            case R.id.refresh_weather:
+                city_name .setText("同步中...");
+                if(!TextUtils.isEmpty(cityCode)){
+                    queryWeatherInfo(cityCode);
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                    city_name.setText(prefs.getString("city_name",""));
+                }
+                break;
+            case R.id.Life_index:
+                Intent intent2 = new Intent(this,LifeIndexActivity.class);
+                startActivity(intent2);
                 break;
             default:
                 break;
@@ -90,6 +107,10 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
         switchCity.setOnClickListener(this);
         more = (Button) findViewById(R.id.more);
         more.setOnClickListener(this);
+        refreshweather = (Button) findViewById(R.id.refresh_weather);
+        refreshweather.setOnClickListener(this);
+        lifeIndex = (Button) findViewById(R.id.Life_index);
+        lifeIndex.setOnClickListener(this);
 
         weather_info_layout = (RelativeLayout) findViewById(R.id.weather_info);
         weather_info_layout2 = (LinearLayout) findViewById(R.id.weather_info1);
@@ -114,7 +135,10 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
         temp1_2 = (TextView) findViewById(R.id.temp1_2);
         temp2_2 = (TextView) findViewById(R.id.temp2_2);
 
-        String cityCode = getIntent().getStringExtra("city_code");
+        cityCode = getIntent().getStringExtra("city_code");
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        editor.putString("cityCode",cityCode);
+        editor.commit();
         task = new downloadImageTask();
         task1 = new downloadImageTask();
         task2 = new downloadImageTask();
@@ -184,6 +208,8 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
 
         weather_info_layout.setVisibility(View.VISIBLE);
         weather_info_layout2.setVisibility(View.VISIBLE);
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 
     class downloadImageTask extends AsyncTask<String, Integer, Boolean> {

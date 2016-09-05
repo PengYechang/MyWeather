@@ -84,7 +84,7 @@ public class ChooseAreaActivity extends Activity {
         HttpUtil.sendHttpRequest(address, new HttpCallbackLister() {
             @Override
             public void onFinish(String response) {
-                HttpUtil.handleCityResponse(weatherDB,ChooseAreaActivity.this,response);
+                HttpUtil.handleCityResponse(weatherDB,response);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

@@ -32,6 +32,8 @@ public class MoreinfoActivity extends Activity{
 
     private  void init_data(){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String qlty = "空气质量类别: "+prefs.getString("qlty","");
+        datalist.add(qlty);
         String aqi = "空气质量指数: "+prefs.getString("aqi","");
         datalist.add(aqi);
         String pm25 = "PM2.5 1小时平均值(ug/m³): "+prefs.getString("pm25","");
@@ -46,7 +48,6 @@ public class MoreinfoActivity extends Activity{
         datalist.add(co);
         String o3 = "臭氧1小时平均值(ug/m³): "+prefs.getString("o3","");
         datalist.add(o3);
-        String qlty = "空气质量类别: "+prefs.getString("qlty","");
-        datalist.add(qlty);
+
     }
 }

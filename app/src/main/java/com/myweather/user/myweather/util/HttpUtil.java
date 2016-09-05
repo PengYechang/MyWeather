@@ -88,7 +88,7 @@ public class HttpUtil {
         return bitmap;
     }
 
-    public static void handleCityResponse(WeatherDB weatherDB,Context context,String response){
+    public static void handleCityResponse(WeatherDB weatherDB,String response){
         try {
             JSONObject cityInfo = new JSONObject(response);
             JSONArray jsonArray = cityInfo.getJSONArray("city_info");
@@ -107,21 +107,77 @@ public class HttpUtil {
 
     public static void handleWeatherResponse(Context context,String response){
         try{
+            String qlty,aqi,co,no2,o3,pm10,pm25,so2;
+            String comf_brf,comf_txt,cw_brf,cw_txt,drsg_brf,drsg_txt,flu_brf,flu_txt,
+                    sport_brf,sport_txt,trav_brf,trav_txt,uv_brf,uv_txt;
             JSONObject jsonObject = new JSONObject(response);
             JSONArray weather = jsonObject.getJSONArray("HeWeather data service 3.0");
             JSONObject weatherInfo = weather.getJSONObject(0);
             JSONObject basic = weatherInfo.getJSONObject("basic");
             String city_name = basic.getString("city");
-            JSONObject aqiCity = weatherInfo.getJSONObject("aqi");
-            JSONObject city = aqiCity.getJSONObject("city");
-            String qlty = city.getString("qlty");
-            String aqi = city.getString("aqi");
-            String co = city.getString("co");
-            String no2 = city.getString("no2");
-            String o3 = city.getString("o3");
-            String pm10 = city.getString("pm10");
-            String pm25 = city.getString("pm25");
-            String so2 = city.getString("so2");
+            if(weatherInfo.has("aqi")) {
+                JSONObject aqiCity = weatherInfo.getJSONObject("aqi");
+                JSONObject city = aqiCity.getJSONObject("city");
+                qlty = city.getString("qlty");
+                aqi = city.getString("aqi");
+                pm10 = city.getString("pm10");
+                pm25 = city.getString("pm25");
+                if(city.has("co")){
+                    no2 = city.getString("no2");
+                    so2 = city.getString("so2");
+                    co = city.getString("co");
+                    o3 = city.getString("o3");
+                }
+                else {
+                    no2 = null;
+                    so2 = null;
+                    co = null;
+                    o3 = null;
+                }
+            }else {
+                qlty = "该城市没有此功能";
+                aqi = null;
+                co = null;
+                no2 = null;
+                o3 = null;
+                pm10 = null;
+                pm25 = null;
+                so2 = null;
+            }
+            if(weatherInfo.has("suggestion")){
+                JSONObject suggestion = weatherInfo.getJSONObject("suggestion");
+                JSONObject comf = suggestion.getJSONObject("comf");
+                comf_brf = comf.getString("brf");
+                comf_txt = comf.getString("txt");
+                JSONObject cw = suggestion.getJSONObject("cw");
+                cw_brf = cw.getString("brf");
+                cw_txt = cw.getString("txt");
+                JSONObject drsg = suggestion.getJSONObject("drsg");
+                drsg_brf = drsg.getString("brf");
+                drsg_txt = drsg.getString("txt");
+                JSONObject flu = suggestion.getJSONObject("flu");
+                flu_brf = flu.getString("brf");
+                flu_txt = flu.getString("txt");
+                JSONObject sport = suggestion.getJSONObject("sport");
+                sport_brf = sport.getString("brf");
+                sport_txt = sport.getString("txt");
+                JSONObject trav = suggestion.getJSONObject("trav");
+                trav_brf = trav.getString("brf");
+                trav_txt = trav.getString("txt");
+                JSONObject uv = suggestion.getJSONObject("uv");
+                uv_brf = uv.getString("brf");
+                uv_txt = uv.getString("txt");
+            }else {
+                comf_brf="null"; cw_brf="null"; drsg_brf="null";flu_brf="null";sport_brf="null";
+                trav_brf="null";uv_brf="null";
+                comf_txt="该城市不支持此功能！";
+                cw_txt="该城市不支持此功能！";
+                drsg_txt="该城市不支持此功能！";
+                flu_txt="该城市不支持此功能！";
+                sport_txt="该城市不支持此功能！";
+                trav_txt="该城市不支持此功能！";
+                uv_txt="该城市不支持此功能！";
+            }
             JSONObject now = weatherInfo.getJSONObject("now");
             JSONObject cond = now.getJSONObject("cond");
             String cond_code = cond.getString("code");
@@ -154,6 +210,21 @@ public class HttpUtil {
             String tmp2_min = tmp2.getString("min");
             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
             editor.putBoolean("city_selected",true);
+            //生活指数
+            editor.putString("comf_brf",comf_brf);
+            editor.putString("cw_brf",cw_brf);
+            editor.putString("drsg_brf",drsg_brf);
+            editor.putString("flu_brf",flu_brf);
+            editor.putString("sport_brf",sport_brf);
+            editor.putString("trav_brf",trav_brf);
+            editor.putString("uv_brf",uv_brf);
+            editor.putString("comf_txt",comf_txt);
+            editor.putString("cw_txt",cw_txt);
+            editor.putString("drsg_txt",drsg_txt);
+            editor.putString("flu_txt",flu_txt);
+            editor.putString("sport_txt",sport_txt);
+            editor.putString("trav_txt",trav_txt);
+            editor.putString("uv_txt",uv_txt);
             //空气质量
             editor.putString("aqi",aqi);
             editor.putString("co",co);

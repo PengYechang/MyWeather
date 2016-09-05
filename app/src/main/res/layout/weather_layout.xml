@@ -375,7 +375,8 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@drawable/meng"/>
+                    android:background="@drawable/meng"
+                    android:id="@+id/Life_index"/>
             </LinearLayout>
 
         </RelativeLayout>
